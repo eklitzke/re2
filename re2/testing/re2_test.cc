@@ -687,6 +687,18 @@ TEST(RE2, FullMatchStringPieceArg) {
   ASSERT_EQ(i, 1234);
 }
 
+#if __has_include(<string_view>) && __cplusplus >= 201703L
+TEST(RE2, FullMatchStringViewArg) {
+  int i;
+  // string_view-arg
+  std::string_view view;
+  ASSERT_TRUE(RE2::FullMatch("ruby:1234", "(\\w+):(\\d+)", &view, &i));
+  ASSERT_EQ(view.size(), 4);
+  ASSERT_TRUE(memcmp(view.data(), "ruby", 4) == 0);
+  ASSERT_EQ(i, 1234);
+}
+#endif
+
 TEST(RE2, FullMatchMultiArg) {
   int i;
   std::string s;

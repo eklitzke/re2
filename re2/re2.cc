@@ -25,6 +25,9 @@
 #include <string>
 #include <utility>
 #include <vector>
+#if __has_include(<string_view>) && __cplusplus >= 201703L
+#include <string_view>
+#endif
 
 #include "util/util.h"
 #include "util/logging.h"
@@ -1061,6 +1064,15 @@ bool Parse(const char* str, size_t n, StringPiece* dest) {
   *dest = StringPiece(str, n);
   return true;
 }
+
+#if __has_include(<string_view>) && __cplusplus >= 201703L
+template <>
+bool Parse(const char *str, size_t n, std::string_view *dest) {
+  if (dest == NULL) return true;
+  *dest = std::string_view(str, n);
+  return true;
+}
+#endif
 
 template <>
 bool Parse(const char* str, size_t n, char* dest) {
